@@ -4,3 +4,5 @@ bin/
 .classpath
 .gitignore.swp
 .settings/
+lint.xml
+project.properties
