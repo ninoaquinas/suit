@@ -17,6 +17,7 @@ public class LoginActivity extends Activity {
 		Parse.initialize(this, "U3cwotKUuI2OSBsfzITZCX9EQwW2wpjHJeRfkgDI", 
 						 "83F9laWZ1ESTJJLFyr3ARPB4cqbn2CyEy6xBsHGH");
 		PushService.setDefaultPushCallback(this, LoginActivity.class);
+		ParseAnalytics.trackAppOpened(getIntent());
 		setContentView(R.layout.activity_login);
 		
 	}
