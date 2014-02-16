@@ -1,3 +1,6 @@
 gen/
 libs/
 bin/
+.classpath
+.gitignore.swp
+.settings/
