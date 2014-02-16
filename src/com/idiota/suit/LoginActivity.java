@@ -4,12 +4,21 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.view.Menu;
 
+import com.parse.Parse;
+import com.parse.ParseAnalytics;
+import com.parse.ParseInstallation;
+import com.parse.PushService;
+
 public class LoginActivity extends Activity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Parse.initialize(this, "U3cwotKUuI2OSBsfzITZCX9EQwW2wpjHJeRfkgDI", 
+						 "83F9laWZ1ESTJJLFyr3ARPB4cqbn2CyEy6xBsHGH");
+		PushService.setDefaultPushCallback(this, LoginActivity.class);
 		setContentView(R.layout.activity_login);
+		
 	}
 
 	@Override
