@@ -2,6 +2,7 @@ package com.idiota.suit;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
@@ -11,7 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 
-public class FriendsListFragment extends ListFragment {
+public class BaseFriendsListFragment extends ListFragment {
 
 	private ArrayAdapter<String> mAdapter;
 	private ArrayList<String> mFriendsList;
@@ -31,12 +32,23 @@ public class FriendsListFragment extends ListFragment {
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		String[] values = new String[] {
-			"Reza Raditya", "Surya Adhiwirawan", "Nino Aquinas", "Cindy Wiryadi", "Tadeus Gary Wijono"
-		};
-		mFriendsList = new ArrayList<String>(Arrays.asList(values));
+		
+		if (mFriendsList == null) {
+			mFriendsList = new ArrayList<String>();
+		}
 		mAdapter = new ArrayAdapter<String>(getActivity(), R.layout.row_friends_list, mFriendsList);
 		setListAdapter(mAdapter);
+	}
+	
+	/*
+	 * Update the friends list. The fragment can do optional filtering by overriding this method.
+	 */
+	public void updateFriendsList(List<String> newList) {
+		mFriendsList = new ArrayList<String>(newList);
+		if (mAdapter == null) return;
+		mAdapter.clear();
+		mAdapter.addAll(mFriendsList);
+		mAdapter.notifyDataSetChanged();
 	}
 
 }

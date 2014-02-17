@@ -1,5 +1,7 @@
 package com.idiota.suit;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import android.content.Context;
@@ -16,10 +18,10 @@ public class FriendsActivity extends FragmentActivity implements TabHost.OnTabCh
 	// Helper classes
 	private class TabInfo {
 		private String tag;
-		private Class<? extends Fragment> clazz;
+		private Class<? extends BaseFriendsListFragment> clazz;
 		private TabHost.TabSpec tabSpec;
 		private Bundle args;
-		private Fragment fragment;
+		private BaseFriendsListFragment fragment;
 		TabInfo(String tag, Class clazz, TabHost.TabSpec tabSpec, Bundle args) {
 			this.tag = tag;
 			this.clazz = clazz;
@@ -73,8 +75,16 @@ public class FriendsActivity extends FragmentActivity implements TabHost.OnTabCh
 			}
 			if (newTab != null) {
 				if (newTab.fragment == null) {
-					newTab.fragment = Fragment.instantiate(this,
+					// Create the fragment
+					newTab.fragment = (BaseFriendsListFragment) Fragment.instantiate(this,
 							newTab.clazz.getName(), newTab.args);
+					
+					// Injects friends list
+					String[] values = new String[] {
+						"Reza Raditya", "Surya Adhiwirawan", "Nino Aquinas", "Cindy Wiryadi", "Tadeus Gary Wijono"
+					};
+					newTab.fragment.updateFriendsList(Arrays.asList(values));
+					
 					ft.add(android.R.id.tabcontent, newTab.fragment, newTab.tag);
 				} else {
 					ft.attach(newTab.fragment);
@@ -144,7 +154,7 @@ public class FriendsActivity extends FragmentActivity implements TabHost.OnTabCh
 		// Check to see if we already have a fragment for this tab, probably
 		// from a previously saved state.  If so, deactivate it, because our
 		// initial state is that a tab isn't shown.
-		tabInfo.fragment = getSupportFragmentManager().findFragmentByTag(tag);
+		tabInfo.fragment = (BaseFriendsListFragment) getSupportFragmentManager().findFragmentByTag(tag);
 		if (tabInfo.fragment != null && !tabInfo.fragment.isDetached()) {
 			FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 			ft.detach(tabInfo.fragment);
