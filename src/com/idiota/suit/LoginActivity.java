@@ -82,14 +82,11 @@ public class LoginActivity extends Activity {
     private void updateView() {
         Session session = Session.getActiveSession();
         if (session.isOpened()) {
-        	mTitle.setText(session.getAccessToken());
-            mButton.setText("logout");
-            mButton.setOnClickListener(new OnClickListener() {
-                public void onClick(View view) { onClickLogout(); }
-            });
+        	Intent goToNextActivity = new Intent(getApplicationContext(), FriendsActivity.class);
+        	goToNextActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        	startActivity(goToNextActivity);
+        	finish();
         } else {
-        	mTitle.setText(R.string.login_title_text);
-            mButton.setText(R.string.login_fbconnect_text);
             mButton.setOnClickListener(new OnClickListener() {
                 public void onClick(View view) { onClickLogin(); }
             });
