@@ -13,7 +13,6 @@ import com.facebook.SessionState;
 import com.parse.Parse;
 
 public class LoginActivity extends Activity {
-	private TextView mTitle;
     private Button mButton;
     private Session.StatusCallback mStatusCallback = new SessionStatusCallback();
 
@@ -45,7 +44,6 @@ public class LoginActivity extends Activity {
         }
         
 		mButton = (Button) findViewById(R.id.fb_connect_button);
-		mTitle = (TextView) findViewById(R.id.login_title_text);
 
         updateView();
 	}
@@ -95,13 +93,6 @@ public class LoginActivity extends Activity {
             session.openForRead(new Session.OpenRequest(this).setCallback(mStatusCallback));
         } else {
             Session.openActiveSession(this, true, mStatusCallback);
-        }
-    }
-
-    private void onClickLogout() {
-        Session session = Session.getActiveSession();
-        if (!session.isClosed()) {
-            session.closeAndClearTokenInformation();
         }
     }
 
