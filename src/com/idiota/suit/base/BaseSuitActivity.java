@@ -46,7 +46,7 @@ public abstract class BaseSuitActivity extends Activity {
     protected void logout() {
         Session activeSession = Session.getActiveSession();
         if (activeSession != null) {
-        	activeSession.close();
+        	activeSession.closeAndClearTokenInformation();;
         }
     	Intent goToLoginActivity = new Intent(getApplicationContext(), LoginActivity.class);
     	goToLoginActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
