@@ -14,7 +14,12 @@ import com.parse.Parse;
 
 public class LoginActivity extends Activity {
     private Button mButton;
-    private Session.StatusCallback mStatusCallback = new SessionStatusCallback();
+    private Session.StatusCallback mStatusCallback = new Session.StatusCallback() {
+		@Override
+		public void call(Session session, SessionState state, Exception exception) {
+            updateView();
+        }
+	};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -96,10 +101,4 @@ public class LoginActivity extends Activity {
         }
     }
 
-    private class SessionStatusCallback implements Session.StatusCallback {
-        @Override
-        public void call(Session session, SessionState state, Exception exception) {
-            updateView();
-        }
-    }
 }
