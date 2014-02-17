@@ -9,10 +9,12 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.facebook.Session;
+import com.facebook.Session.StatusCallback;
 import com.facebook.SessionState;
+import com.idiota.suit.base.BaseSuitActivity;
 import com.parse.Parse;
 
-public class LoginActivity extends Activity {
+public class LoginActivity extends BaseSuitActivity {
     private Button mButton;
     private Session.StatusCallback mStatusCallback = new Session.StatusCallback() {
 		@Override
@@ -100,5 +102,11 @@ public class LoginActivity extends Activity {
             Session.openActiveSession(this, true, mStatusCallback);
         }
     }
+
+	@Override
+	protected StatusCallback getSessionStatusCallback() {
+		// TODO Auto-generated method stub
+		return mStatusCallback;
+	}
 
 }

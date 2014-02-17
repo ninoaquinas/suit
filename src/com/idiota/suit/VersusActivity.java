@@ -1,5 +1,10 @@
 package com.idiota.suit;
 
+import com.facebook.Session;
+import com.facebook.Session.StatusCallback;
+import com.facebook.SessionState;
+import com.idiota.suit.base.BaseSuitActivity;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,7 +14,14 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class VersusActivity extends Activity {
+public class VersusActivity extends BaseSuitActivity {
+
+    private Session.StatusCallback mStatusCallback = new Session.StatusCallback() {
+		@Override
+		public void call(Session session, SessionState state, Exception exception) {
+            return;
+        }
+	};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +72,12 @@ public class VersusActivity extends Activity {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.versus, menu);
 		return true;
+	}
+
+	@Override
+	protected StatusCallback getSessionStatusCallback() {
+		// TODO Auto-generated method stub
+		return mStatusCallback;
 	}
 
 }

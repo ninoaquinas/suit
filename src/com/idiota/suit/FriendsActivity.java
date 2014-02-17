@@ -4,6 +4,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
+import com.facebook.Session;
+import com.facebook.Session.StatusCallback;
+import com.facebook.SessionState;
+import com.idiota.suit.base.BaseSuitFragmentActivity;
+
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -14,7 +19,7 @@ import android.view.View;
 import android.widget.TabHost;
 import android.widget.TabHost.TabContentFactory;
 
-public class FriendsActivity extends FragmentActivity implements TabHost.OnTabChangeListener{
+public class FriendsActivity extends BaseSuitFragmentActivity implements TabHost.OnTabChangeListener{
 	// Helper classes
 	private class TabInfo {
 		private String tag;
@@ -47,6 +52,12 @@ public class FriendsActivity extends FragmentActivity implements TabHost.OnTabCh
 	private TabHost mTabHost;
 	private HashMap<String, TabInfo> mMapTabInfo = new HashMap<String, TabInfo>();
 	private TabInfo mLastTab = null;
+    private Session.StatusCallback mStatusCallback = new Session.StatusCallback() {
+		@Override
+		public void call(Session session, SessionState state, Exception exception) {
+            return;
+        }
+	};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -163,5 +174,11 @@ public class FriendsActivity extends FragmentActivity implements TabHost.OnTabCh
 		}
 
 		tabHost.addTab(tabSpec);
+	}
+
+	@Override
+	protected StatusCallback getSessionStatusCallback() {
+		// TODO Auto-generated method stub
+		return mStatusCallback;
 	}
 }
