@@ -2,14 +2,16 @@ package com.idiota.suit.base;
 
 import com.facebook.Session;
 import com.facebook.SessionState;
+import com.idiota.suit.LoginActivity;
+import com.idiota.suit.R;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.view.MenuItem;
 
 public abstract class BaseSuitActivity extends Activity {
-	
-	protected abstract Session.StatusCallback getSessionStatusCallback();
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -17,16 +19,51 @@ public abstract class BaseSuitActivity extends Activity {
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 	}
 	
-	@Override
-	public void onResume() {
-		super.onResume();
-        Session session = Session.getActiveSession();
-        Session.StatusCallback sessionStatusCallback = getSessionStatusCallback();
-        if (!session.isOpened() && !session.isClosed()) {
-            session.openForRead(new Session.OpenRequest(this).setCallback(sessionStatusCallback));
-        } else {
-            Session.openActiveSession(this, true, sessionStatusCallback);
-        }
-	}
+    @Override
+    public void onStart() {
+        super.onStart();
+        Session.getActiveSession().addCallback(getSessionStatusCallback());
+    }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        Session.getActiveSession().removeCallback(getSessionStatusCallback());
+    }
+
+	protected Session.StatusCallback getSessionStatusCallback() {
+		return new Session.StatusCallback() {
+			@Override
+			public void call(Session session, SessionState state, Exception exception) {
+		        Session activeSession = Session.getActiveSession();
+		        if (!activeSession.isOpened()) {
+		        	logout();
+		        }
+			}
+		};
+	}
+    
+    protected void logout() {
+        Session activeSession = Session.getActiveSession();
+        if (activeSession != null) {
+        	activeSession.close();
+        }
+    	Intent goToLoginActivity = new Intent(getApplicationContext(), LoginActivity.class);
+    	goToLoginActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+    	startActivity(goToLoginActivity);
+    	finish();
+    }
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+	    // Handle presses on the action bar items
+	    switch (item.getItemId()) {
+	        case R.id.action_logout:
+	            logout();
+	            return true;
+	        default:
+	            return super.onOptionsItemSelected(item);
+	    }
+	}
+	
 }

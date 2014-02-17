@@ -56,18 +56,6 @@ public class LoginActivity extends BaseSuitActivity {
 	}
 
     @Override
-    public void onStart() {
-        super.onStart();
-        Session.getActiveSession().addCallback(mStatusCallback);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        Session.getActiveSession().removeCallback(mStatusCallback);
-    }
-
-    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
