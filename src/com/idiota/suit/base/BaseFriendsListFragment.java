@@ -1,7 +1,12 @@
-package com.idiota.suit;
+package com.idiota.suit.base;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.idiota.suit.R;
+import com.idiota.suit.R.layout;
+import com.idiota.suit.component.FriendsArrayAdapter;
+import com.idiota.suit.model.FriendPreview;
 
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
@@ -13,8 +18,8 @@ import android.widget.LinearLayout;
 
 public class BaseFriendsListFragment extends ListFragment {
 
-	private ArrayAdapter<String> mAdapter;
-	private ArrayList<String> mFriendsList;
+	private FriendsArrayAdapter mAdapter;
+	private ArrayList<FriendPreview> mFriendsList;
 
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -33,17 +38,17 @@ public class BaseFriendsListFragment extends ListFragment {
 		super.onActivityCreated(savedInstanceState);
 		
 		if (mFriendsList == null) {
-			mFriendsList = new ArrayList<String>();
+			mFriendsList = new ArrayList<FriendPreview>();
 		}
-		mAdapter = new ArrayAdapter<String>(getActivity(), R.layout.row_friends_list, mFriendsList);
+		mAdapter = new FriendsArrayAdapter(getActivity(), mFriendsList);
 		setListAdapter(mAdapter);
 	}
 	
 	/*
 	 * Update the friends list. The fragment can do optional filtering by overriding this method.
 	 */
-	public void updateFriendsList(List<String> newList) {
-		mFriendsList = new ArrayList<String>(newList);
+	public void updateFriendsList(ArrayList<FriendPreview> newList) {
+		mFriendsList = new ArrayList<FriendPreview>(newList);
 		if (mAdapter == null) return;
 		mAdapter.clear();
 		mAdapter.addAll(mFriendsList);

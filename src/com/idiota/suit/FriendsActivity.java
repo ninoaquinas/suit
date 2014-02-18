@@ -28,6 +28,7 @@ import com.facebook.model.GraphObject;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.idiota.suit.base.BaseFriendsListFragment;
 import com.idiota.suit.base.BaseSuitFragmentActivity;
 import com.idiota.suit.model.FriendPreview;
 
@@ -67,7 +68,7 @@ public class FriendsActivity extends BaseSuitFragmentActivity implements TabHost
 	private HashMap<String, TabInfo> mMapTabInfo = new HashMap<String, TabInfo>();
 	private TabInfo mLastTab = null;
 	private boolean mHasFetchedFriends = false;
-    private ArrayList<String> mFriends = null;
+    private ArrayList<FriendPreview> mFriends = null;
     
 
 	@Override
@@ -164,7 +165,7 @@ public class FriendsActivity extends BaseSuitFragmentActivity implements TabHost
 		// Tab 'pending'
 		tabInfo = new TabInfo(
 			"pending",															/* tag */
-			FriendsSuitSentFragment.class,											/* class */
+			FriendsSuitSentFragment.class,										/* class */
 			this.mTabHost.newTabSpec("pending").setIndicator("Elo nantang"),	/* tabSpec */
 			args	 															/* args */
 		);
@@ -174,10 +175,10 @@ public class FriendsActivity extends BaseSuitFragmentActivity implements TabHost
 
 		// Tab 'received'
 		tabInfo = new TabInfo(
-			"recvd",															/* tag */
-			FriendsSuitReceivedFragment.class,											/* class */
-			this.mTabHost.newTabSpec("recvd").setIndicator("Elo ditantang"),	/* tabSpec */
-			args	 															/* args */
+			"recvd",														/* tag */
+			FriendsSuitReceivedFragment.class,								/* class */
+			this.mTabHost.newTabSpec("recvd").setIndicator("Ditantang"),	/* tabSpec */
+			args	 														/* args */
 		);
 		addTab(this.mTabHost, tabInfo);
 		mMapTabInfo.put(tabInfo.tag, tabInfo);
@@ -235,14 +236,7 @@ public class FriendsActivity extends BaseSuitFragmentActivity implements TabHost
 					        ObjectMapper mapper = new ObjectMapper(); // can reuse, share globally
 					        List<FriendPreview> friends = mapper.readValue(arr.toString(), new TypeReference<List<FriendPreview>>(){});
 					        
-					        mFriends = new ArrayList<String>();
-					        for(FriendPreview friend: friends) {
-					            String id     = friend.getUid();
-					            String name   = friend.getName();
-					            String urlImg = friend.getPic_square();
-					            
-					            mFriends.add(name);
-					        }
+					        mFriends = new ArrayList<FriendPreview>(friends);
 					        
 							for(Entry<String, TabInfo> entry : mMapTabInfo.entrySet()) {
 							    String key = entry.getKey();
