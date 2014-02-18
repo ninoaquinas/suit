@@ -16,13 +16,6 @@ import android.widget.TextView;
 
 public class VersusActivity extends BaseSuitActivity {
 
-    private Session.StatusCallback mStatusCallback = new Session.StatusCallback() {
-		@Override
-		public void call(Session session, SessionState state, Exception exception) {
-            return;
-        }
-	};
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -72,12 +65,6 @@ public class VersusActivity extends BaseSuitActivity {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.versus, menu);
 		return true;
-	}
-
-	@Override
-	protected StatusCallback getSessionStatusCallback() {
-		// TODO Auto-generated method stub
-		return mStatusCallback;
 	}
 
 }

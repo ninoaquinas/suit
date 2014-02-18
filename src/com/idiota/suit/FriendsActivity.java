@@ -52,12 +52,6 @@ public class FriendsActivity extends BaseSuitFragmentActivity implements TabHost
 	private TabHost mTabHost;
 	private HashMap<String, TabInfo> mMapTabInfo = new HashMap<String, TabInfo>();
 	private TabInfo mLastTab = null;
-    private Session.StatusCallback mStatusCallback = new Session.StatusCallback() {
-		@Override
-		public void call(Session session, SessionState state, Exception exception) {
-            return;
-        }
-	};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -175,10 +169,5 @@ public class FriendsActivity extends BaseSuitFragmentActivity implements TabHost
 
 		tabHost.addTab(tabSpec);
 	}
-
-	@Override
-	protected StatusCallback getSessionStatusCallback() {
-		// TODO Auto-generated method stub
-		return mStatusCallback;
-	}
+	
 }
