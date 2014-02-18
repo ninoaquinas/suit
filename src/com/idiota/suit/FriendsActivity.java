@@ -1,6 +1,7 @@
 package com.idiota.suit;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -15,9 +16,14 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TabHost.TabContentFactory;
 
@@ -35,6 +41,19 @@ import com.idiota.suit.base.BaseSuitFragmentActivity;
 import com.idiota.suit.model.FriendPreview;
 
 public class FriendsActivity extends BaseSuitFragmentActivity implements TabHost.OnTabChangeListener{
+
+	protected static final String TAG = "FriendsActivity";
+	
+	private TabHost mTabHost;
+	private HashMap<String, TabInfo> mMapTabInfo = new HashMap<String, TabInfo>();
+	private TabInfo mLastTab = null;
+	
+	private boolean mHasFetchedFriends = false;
+    private ArrayList<FriendPreview> mFriends = null;
+    
+    private EditText mSearchField;
+    private ImageView mSearchClear;
+	
 	// Helper classes
 	private class TabInfo {
 		private String tag;
@@ -42,7 +61,7 @@ public class FriendsActivity extends BaseSuitFragmentActivity implements TabHost
 		private TabHost.TabSpec tabSpec;
 		private Bundle args;
 		private BaseFriendsListFragment fragment;
-		TabInfo(String tag, Class clazz, TabHost.TabSpec tabSpec, Bundle args) {
+		TabInfo(String tag, Class<? extends BaseFriendsListFragment> clazz, TabHost.TabSpec tabSpec, Bundle args) {
 			this.tag = tag;
 			this.clazz = clazz;
 			this.tabSpec = tabSpec;
@@ -64,21 +83,13 @@ public class FriendsActivity extends BaseSuitFragmentActivity implements TabHost
 		}
 	}
 
-	protected static final String TAG = "FriendsActivity";
-	
-	private TabHost mTabHost;
-	private HashMap<String, TabInfo> mMapTabInfo = new HashMap<String, TabInfo>();
-	private TabInfo mLastTab = null;
-	private boolean mHasFetchedFriends = false;
-    private ArrayList<FriendPreview> mFriends = null;
-    
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_friends);
 		
-		initialiseTabHost(savedInstanceState);
+		initTabHost(savedInstanceState);
+		initSearchField();
 		mHasFetchedFriends = false;
 	}
 	
@@ -108,6 +119,7 @@ public class FriendsActivity extends BaseSuitFragmentActivity implements TabHost
 			fetchAllFriends();
 		}
 	};
+	
 	@Override
 	protected Session.StatusCallback getSessionStatusCallback() {
 		return mCallback;
@@ -131,7 +143,7 @@ public class FriendsActivity extends BaseSuitFragmentActivity implements TabHost
 					
 					// Injects friends list
 					if (mFriends != null) {
-						newTab.fragment.updateFriendsList(mFriends);
+						newTab.fragment.updateFriendsList(filteredFriendsList());
 					}
 					
 					ft.add(android.R.id.tabcontent, newTab.fragment, newTab.tag);
@@ -146,7 +158,7 @@ public class FriendsActivity extends BaseSuitFragmentActivity implements TabHost
 		}
 	}
 
-	private void initialiseTabHost(Bundle args) {
+	private void initTabHost(Bundle args) {
 		mTabHost = (TabHost)findViewById(android.R.id.tabhost);
 		mTabHost.setup();
 		
@@ -247,15 +259,7 @@ public class FriendsActivity extends BaseSuitFragmentActivity implements TabHost
 					        		        return o1.getName().compareTo(o2.getName());
 					        		    }
 					        		});
-					        
-							for(Entry<String, TabInfo> entry : mMapTabInfo.entrySet()) {
-							    String key = entry.getKey();
-							    TabInfo value = entry.getValue();
-							    
-							    if (value.fragment != null) {
-							    	value.fragment.updateFriendsList(mFriends);
-							    }
-							}
+					        updateAllList();
 					    }
 					    catch (Throwable t) {
 					        t.printStackTrace();
@@ -267,6 +271,103 @@ public class FriendsActivity extends BaseSuitFragmentActivity implements TabHost
 				}); 
 		if (!mHasFetchedFriends) Request.executeBatchAsync(request);
 		mHasFetchedFriends = true;
+	}
+	
+	private void initSearchField() {
+		mSearchField = (EditText) findViewById(R.id.friends_search_field);
+		mSearchClear = (ImageView) findViewById(R.id.friends_search_clear);
+		
+		mSearchField.addTextChangedListener(new TextWatcher() {
+			@Override
+			public void afterTextChanged(Editable s) {
+				updateAllList();
+			}
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {}
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before,
+					int count) {}
+		});
+		
+		mSearchClear.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				mSearchField.setText("");
+			}
+		});
+	}
+	
+	private void updateAllList() {
+		for(Entry<String, TabInfo> entry : mMapTabInfo.entrySet()) {
+		    String key = entry.getKey();
+		    TabInfo value = entry.getValue();
+		    
+		    if (value.fragment != null) {
+		    	value.fragment.updateFriendsList(filteredFriendsList());
+		    }
+		}
+	}
+	
+	private ArrayList<FriendPreview> filteredFriendsList() {
+		String query = mSearchField.getText().toString();
+		if (query == null) {
+			return mFriends;
+		}
+		
+		ArrayList<String> searchWords = new ArrayList<String>(Arrays.asList(query.split(" ")));
+		if (searchWords.size() == 1 && searchWords.get(0).length() == 0) {
+			return mFriends;
+		}
+		
+		boolean isLastWordFinished = (query.endsWith(" "));
+		
+		ArrayList<FriendPreview> newList = new ArrayList<FriendPreview>();
+		ArrayList<FriendPreview> oldList = mFriends;
+		/*
+		if (mLastFilteredFriends != null && 
+				mLastQuery != null && 
+				mLastQuery.length() <= query.length() 
+				&& query.startsWith(mLastQuery)) {
+			// We can just filter out from previous list
+			oldList = mLastFilteredFriends;
+			if (mLastQuery.equals(query)) return mLastFilteredFriends;
+		} else {
+			mLastFilteredFriends = null;
+		}
+		*/
+		
+		for(FriendPreview friend: oldList) {
+			ArrayList<String> nameWords = new ArrayList<String>(Arrays.asList(friend.getName().split(" ")));
+			boolean valid = true;
+			for(int i = 0; i < searchWords.size(); i++) {
+				String searchWord = searchWords.get(i);
+				boolean partialValid = false;
+				if (i == searchWords.size()-1 && !isLastWordFinished) { 
+					// the last unfinished word should only match prefix
+					for(String nameWord: nameWords) {
+						if (nameWord.toLowerCase().startsWith(searchWord.toLowerCase())) partialValid = true;
+						if (partialValid) break;
+					}
+				} else {
+					for(String nameWord: nameWords) {
+						if (nameWord.equalsIgnoreCase(searchWord)) partialValid = true;
+						if (partialValid) break;
+					}
+				}
+				if (!partialValid) {
+					valid = false;
+					break;
+				}
+			}
+			if (valid) newList.add(friend);
+		}
+		/*
+		mLastQuery = query;
+		mLastFilteredFriends = newList;
+		*/
+		return newList;
 	}
 	
 }

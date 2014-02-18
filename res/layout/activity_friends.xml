@@ -10,10 +10,35 @@
         android:text="@string/friends_title_text"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+	    
+	    <EditText
+	        android:id="@+id/friends_search_field"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:layout_weight="1"
+	        android:ems="10"
+	        android:inputType="textPersonName" >
+	
+	        <requestFocus />
+	    </EditText>
+
+	    <ImageView
+	        android:id="@+id/friends_search_clear"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:layout_weight="9"
+	        android:src="@android:drawable/ic_menu_close_clear_cancel" />
+
+    </LinearLayout>
+
     <TabHost
         android:id="@android:id/tabhost"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent"  >
 
         <LinearLayout
             android:layout_width="match_parent"
