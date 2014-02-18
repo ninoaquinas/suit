@@ -2,7 +2,6 @@ package com.idiota.suit;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -19,7 +18,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
@@ -33,7 +31,6 @@ import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.model.GraphObject;
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.idiota.suit.base.BaseFriendsListFragment;
@@ -325,18 +322,6 @@ public class FriendsActivity extends BaseSuitFragmentActivity implements TabHost
 		
 		ArrayList<FriendPreview> newList = new ArrayList<FriendPreview>();
 		ArrayList<FriendPreview> oldList = mFriends;
-		/*
-		if (mLastFilteredFriends != null && 
-				mLastQuery != null && 
-				mLastQuery.length() <= query.length() 
-				&& query.startsWith(mLastQuery)) {
-			// We can just filter out from previous list
-			oldList = mLastFilteredFriends;
-			if (mLastQuery.equals(query)) return mLastFilteredFriends;
-		} else {
-			mLastFilteredFriends = null;
-		}
-		*/
 		
 		for(FriendPreview friend: oldList) {
 			ArrayList<String> nameWords = new ArrayList<String>(Arrays.asList(friend.getName().split(" ")));
