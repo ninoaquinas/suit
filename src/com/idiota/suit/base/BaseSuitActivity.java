@@ -1,17 +1,27 @@
 package com.idiota.suit.base;
 
-import com.facebook.Session;
-import com.facebook.SessionState;
-import com.idiota.suit.LoginActivity;
-import com.idiota.suit.R;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.MenuItem;
 
+import com.facebook.Session;
+import com.facebook.SessionState;
+import com.idiota.suit.LoginActivity;
+import com.idiota.suit.R;
+
 public abstract class BaseSuitActivity extends Activity {
+	
+	private Session.StatusCallback mCallback = new Session.StatusCallback() {
+		@Override
+		public void call(Session session, SessionState state, Exception exception) {
+	        Session activeSession = Session.getActiveSession();
+	        if (!activeSession.isOpened()) {
+	        	logout();
+	        }
+		}
+	};
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -32,15 +42,7 @@ public abstract class BaseSuitActivity extends Activity {
     }
 
 	protected Session.StatusCallback getSessionStatusCallback() {
-		return new Session.StatusCallback() {
-			@Override
-			public void call(Session session, SessionState state, Exception exception) {
-		        Session activeSession = Session.getActiveSession();
-		        if (!activeSession.isOpened()) {
-		        	logout();
-		        }
-			}
-		};
+		return mCallback;
 	}
     
     protected void logout() {

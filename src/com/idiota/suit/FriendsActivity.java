@@ -1,23 +1,29 @@
 package com.idiota.suit;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map.Entry;
 
-import com.facebook.Session;
-import com.facebook.Session.StatusCallback;
-import com.facebook.SessionState;
-import com.idiota.suit.base.BaseSuitFragmentActivity;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.TabHost;
 import android.widget.TabHost.TabContentFactory;
+
+import com.facebook.HttpMethod;
+import com.facebook.Request;
+import com.facebook.Response;
+import com.facebook.Session;
+import com.facebook.SessionState;
+import com.facebook.model.GraphObject;
+import com.idiota.suit.base.BaseSuitFragmentActivity;
 
 public class FriendsActivity extends BaseSuitFragmentActivity implements TabHost.OnTabChangeListener{
 	// Helper classes
@@ -48,10 +54,15 @@ public class FriendsActivity extends BaseSuitFragmentActivity implements TabHost
 			return v;
 		}
 	}
+
+	protected static final String TAG = "FriendsActivity";
 	
 	private TabHost mTabHost;
 	private HashMap<String, TabInfo> mMapTabInfo = new HashMap<String, TabInfo>();
 	private TabInfo mLastTab = null;
+	private boolean mHasFetchedFriends = false;
+    private ArrayList<String> mFriends = null;
+    
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +70,18 @@ public class FriendsActivity extends BaseSuitFragmentActivity implements TabHost
 		setContentView(R.layout.activity_friends);
 		
 		initialiseTabHost(savedInstanceState);
+		mHasFetchedFriends = false;
+	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+		Session session = Session.getActiveSession();
+		if (session.isClosed()) {
+			logout();
+		} else {
+			fetchAllFriends();
+		}
 	}
 
 	@Override
@@ -66,6 +89,19 @@ public class FriendsActivity extends BaseSuitFragmentActivity implements TabHost
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.friends, menu);
 		return true;
+	}
+	
+	private Session.StatusCallback mCallback = new Session.StatusCallback() {
+		
+		@Override
+		public void call(Session session, SessionState state, Exception exception) {
+			// TODO Auto-generated method stub
+			fetchAllFriends();
+		}
+	};
+	@Override
+	protected Session.StatusCallback getSessionStatusCallback() {
+		return mCallback;
 	}
 	
 	@Override
@@ -85,10 +121,9 @@ public class FriendsActivity extends BaseSuitFragmentActivity implements TabHost
 							newTab.clazz.getName(), newTab.args);
 					
 					// Injects friends list
-					String[] values = new String[] {
-						"Reza Raditya", "Surya Adhiwirawan", "Nino Aquinas", "Cindy Wiryadi", "Tadeus Gary Wijono"
-					};
-					newTab.fragment.updateFriendsList(Arrays.asList(values));
+					if (mFriends != null) {
+						newTab.fragment.updateFriendsList(mFriends);
+					}
 					
 					ft.add(android.R.id.tabcontent, newTab.fragment, newTab.tag);
 				} else {
@@ -168,6 +203,60 @@ public class FriendsActivity extends BaseSuitFragmentActivity implements TabHost
 		}
 
 		tabHost.addTab(tabSpec);
+	}
+	
+	private void fetchAllFriends() {
+		Log.i(TAG, "Fetching all friends");
+		String fqlQuery = "SELECT uid, name, pic_square FROM user WHERE uid IN " +
+				"(SELECT uid2 FROM friend WHERE uid1 = me() LIMIT 25)";
+		Bundle params = new Bundle();
+		params.putString("q", fqlQuery);
+		Session session = Session.getActiveSession();
+		Request request = new Request(session,
+				"/fql",                         
+				params,                         
+				HttpMethod.GET,                 
+				new Request.Callback() {         
+					public void onCompleted(Response response) {
+						Log.i(TAG, "Result: " + response.toString());
+					    try
+					    {
+					        GraphObject go  = response.getGraphObject();
+					        JSONObject  jso = go.getInnerJSONObject();
+					        JSONArray   arr = jso.getJSONArray( "data" );
+					        
+					        mFriends = new ArrayList<String>();
+					        for ( int i = 0; i < ( arr.length() ); i++ )
+					        {
+					            JSONObject json_obj = arr.getJSONObject( i );
+
+					            String id     = json_obj.getString( "uid"           );
+					            String name   = json_obj.getString( "name"          );
+					            String urlImg = json_obj.getString( "pic_square"    );
+					            
+					            mFriends.add(name);
+					        }
+					        
+							for(Entry<String, TabInfo> entry : mMapTabInfo.entrySet()) {
+							    String key = entry.getKey();
+							    TabInfo value = entry.getValue();
+							    
+							    if (value.fragment != null) {
+							    	value.fragment.updateFriendsList(mFriends);
+							    }
+							}
+					    }
+					    catch ( Throwable t )
+					    {
+					        t.printStackTrace();
+					        mHasFetchedFriends = false;
+					        fetchAllFriends();
+					    }
+						
+					}
+				}); 
+		if (!mHasFetchedFriends) Request.executeBatchAsync(request);
+		mHasFetchedFriends = true;
 	}
 	
 }

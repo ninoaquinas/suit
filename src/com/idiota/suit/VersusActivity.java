@@ -1,11 +1,5 @@
 package com.idiota.suit;
 
-import com.facebook.Session;
-import com.facebook.Session.StatusCallback;
-import com.facebook.SessionState;
-import com.idiota.suit.base.BaseSuitActivity;
-
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -13,6 +7,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.idiota.suit.base.BaseSuitActivity;
 
 public class VersusActivity extends BaseSuitActivity {
 
