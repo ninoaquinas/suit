@@ -2,6 +2,8 @@ package com.idiota.suit;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
@@ -215,7 +217,7 @@ public class FriendsActivity extends BaseSuitFragmentActivity implements TabHost
 	private void fetchAllFriends() {
 		Log.i(TAG, "Fetching all friends");
 		String fqlQuery = "SELECT uid, name, pic_square FROM user WHERE uid IN " +
-				"(SELECT uid2 FROM friend WHERE uid1 = me() LIMIT 25)";
+				"(SELECT uid2 FROM friend WHERE uid1 = me())";
 		Bundle params = new Bundle();
 		params.putString("q", fqlQuery);
 		Session session = Session.getActiveSession();
@@ -237,6 +239,14 @@ public class FriendsActivity extends BaseSuitFragmentActivity implements TabHost
 					        List<FriendPreview> friends = mapper.readValue(arr.toString(), new TypeReference<List<FriendPreview>>(){});
 					        
 					        mFriends = new ArrayList<FriendPreview>(friends);
+					        Collections.sort(
+					        		mFriends, 
+					        		new Comparator<FriendPreview>() {
+					        		    @Override
+					        		    public int compare(FriendPreview o1, FriendPreview o2) {
+					        		        return o1.getName().compareTo(o2.getName());
+					        		    }
+					        		});
 					        
 							for(Entry<String, TabInfo> entry : mMapTabInfo.entrySet()) {
 							    String key = entry.getKey();
@@ -247,8 +257,7 @@ public class FriendsActivity extends BaseSuitFragmentActivity implements TabHost
 							    }
 							}
 					    }
-					    catch ( Throwable t )
-					    {
+					    catch (Throwable t) {
 					        t.printStackTrace();
 					        mHasFetchedFriends = false;
 					        fetchAllFriends();
