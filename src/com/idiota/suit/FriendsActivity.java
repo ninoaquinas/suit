@@ -1,7 +1,9 @@
 package com.idiota.suit;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map.Entry;
 
 import org.json.JSONArray;
@@ -23,7 +25,11 @@ import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.model.GraphObject;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.idiota.suit.base.BaseSuitFragmentActivity;
+import com.idiota.suit.model.FriendPreview;
 
 public class FriendsActivity extends BaseSuitFragmentActivity implements TabHost.OnTabChangeListener{
 	// Helper classes
@@ -225,14 +231,15 @@ public class FriendsActivity extends BaseSuitFragmentActivity implements TabHost
 					        JSONObject  jso = go.getInnerJSONObject();
 					        JSONArray   arr = jso.getJSONArray( "data" );
 					        
+					        
+					        ObjectMapper mapper = new ObjectMapper(); // can reuse, share globally
+					        List<FriendPreview> friends = mapper.readValue(arr.toString(), new TypeReference<List<FriendPreview>>(){});
+					        
 					        mFriends = new ArrayList<String>();
-					        for ( int i = 0; i < ( arr.length() ); i++ )
-					        {
-					            JSONObject json_obj = arr.getJSONObject( i );
-
-					            String id     = json_obj.getString( "uid"           );
-					            String name   = json_obj.getString( "name"          );
-					            String urlImg = json_obj.getString( "pic_square"    );
+					        for(FriendPreview friend: friends) {
+					            String id     = friend.getUid();
+					            String name   = friend.getName();
+					            String urlImg = friend.getPic_square();
 					            
 					            mFriends.add(name);
 					        }
