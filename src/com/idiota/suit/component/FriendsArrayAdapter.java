@@ -2,16 +2,16 @@ package com.idiota.suit.component;
 
 import java.util.ArrayList;
 
-import com.idiota.suit.R;
-import com.idiota.suit.model.FriendPreview;
-import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
-
 import android.app.Activity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.idiota.suit.R;
+import com.idiota.suit.model.FriendPreview;
+import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
 
 public class FriendsArrayAdapter extends ArrayAdapter<FriendPreview> {
 	

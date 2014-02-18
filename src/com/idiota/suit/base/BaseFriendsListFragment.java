@@ -1,20 +1,17 @@
 package com.idiota.suit.base;
 
 import java.util.ArrayList;
-import java.util.List;
-
-import com.idiota.suit.R;
-import com.idiota.suit.R.layout;
-import com.idiota.suit.component.FriendsArrayAdapter;
-import com.idiota.suit.model.FriendPreview;
 
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
+
+import com.idiota.suit.R;
+import com.idiota.suit.component.FriendsArrayAdapter;
+import com.idiota.suit.model.FriendPreview;
 
 public class BaseFriendsListFragment extends ListFragment {
 
