@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.idiota.suit.R;
 import com.idiota.suit.model.FriendPreview;
+import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
 
 import android.app.Activity;
 import android.view.View;
@@ -23,7 +24,8 @@ public class FriendsArrayAdapter extends ArrayAdapter<FriendPreview> {
 	
 	@Override
 	public View getView(int position, View view, ViewGroup parent) {
-		if (this.getItem(position) == null) {
+		FriendPreview item = getItem(position);
+		if (item == null) {
 			return null;
 		}
 		if (view == null) {
@@ -32,10 +34,11 @@ public class FriendsArrayAdapter extends ArrayAdapter<FriendPreview> {
 		
 		// Setting image
 		ImageView imageView = (ImageView) view.findViewById(R.id.row_friend_image);
+		UrlImageViewHelper.setUrlDrawable(imageView, item.getPic_square(), R.drawable.com_facebook_profile_picture_blank_square);
 		
 		// Setting name
 		TextView textView = (TextView) view.findViewById(R.id.row_friend_name);
-		textView.setText(this.getItem(position).getName());
+		textView.setText(item.getName());
 		
 		return view;
 	}
