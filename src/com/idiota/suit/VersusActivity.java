@@ -9,6 +9,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.idiota.suit.base.BaseSuitActivity;
+import com.idiota.suit.model.FriendPreview;
+import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
 
 public class VersusActivity extends BaseSuitActivity {
 
@@ -18,13 +20,18 @@ public class VersusActivity extends BaseSuitActivity {
 		setContentView(R.layout.activity_versus);
 		
 		Intent intent = getIntent();
-		String friendName = intent.getStringExtra("name");
-		String friendPhoto = intent.getStringExtra("photo");
-		int friendId = intent.getIntExtra("id", 0);
+		FriendPreview friend = (FriendPreview) intent.getParcelableExtra("friend");
+		String friendName = friend.getName();
+		String friendPhoto = friend.getPic_square();
+		String friendId = friend.getUid();
 		
 		//set all the content of view
 
 		ImageView friendPhotoView = (ImageView) findViewById(R.id.versus_friend_image);
+		UrlImageViewHelper.setUrlDrawable(
+				friendPhotoView, 
+				friend.getPic_square(), 
+				R.drawable.com_facebook_profile_picture_blank_square);
 		
 		TextView friendNameView = (TextView) findViewById(R.id.versus_friend_name);
 		friendNameView.setText(friendName);
@@ -51,9 +58,6 @@ public class VersusActivity extends BaseSuitActivity {
 		
 		TextView versusTotalSeriView = (TextView) findViewById(R.id.versus_total_seri);
 		versusTotalSeriView.setText(Integer.toString(draw));
-		
-		
-		
 	}
 
 	@Override

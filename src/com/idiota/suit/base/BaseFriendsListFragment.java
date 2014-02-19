@@ -2,14 +2,20 @@ package com.idiota.suit.base;
 
 import java.util.ArrayList;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 
 import com.idiota.suit.R;
+import com.idiota.suit.VersusActivity;
 import com.idiota.suit.component.FriendsArrayAdapter;
 import com.idiota.suit.model.FriendPreview;
 
@@ -25,7 +31,7 @@ public class BaseFriendsListFragment extends ListFragment {
             // No parent view. This fragment won't be displayed anyway.
             return null;
         }
-        
+
         LinearLayout view = (LinearLayout) inflater.inflate(R.layout.fragment_friends_list, container, false);
         return view;
     }
