@@ -1,0 +1,42 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+    
+	<TextView
+	    android:id="@+id/suit_opponent"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:text="Lawan Reza Raditya"
+	    android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+		<Button
+		    android:id="@+id/suit_gajah"
+		    android:layout_width="match_parent"
+		    android:layout_height="match_parent"
+		    android:layout_weight="1"
+		    android:padding="4dp"
+		    android:text="Gajah" />
+		
+		<Button
+		    android:id="@+id/suit_orang"
+		    android:layout_width="match_parent"
+		    android:layout_height="match_parent"
+		    android:layout_weight="1"
+		    android:padding="4dp"
+		    android:text="Orang" />
+		
+		<Button
+		    android:id="@+id/suit_semut"
+		    android:layout_width="match_parent"
+		    android:layout_height="match_parent"
+		    android:layout_weight="1"
+		    android:padding="4dp"
+		    android:text="Semut" />
+    </LinearLayout>
+
+</LinearLayout>

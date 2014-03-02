@@ -101,13 +101,6 @@ public class FriendsActivity extends BaseSuitFragmentActivity implements TabHost
 			fetchAllFriends();
 		}
 	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.friends, menu);
-		return true;
-	}
 	
 	private Session.StatusCallback mCallback = new Session.StatusCallback() {
 		
@@ -243,7 +236,6 @@ public class FriendsActivity extends BaseSuitFragmentActivity implements TabHost
 					        GraphObject go  = response.getGraphObject();
 					        JSONObject  jso = go.getInnerJSONObject();
 					        JSONArray   arr = jso.getJSONArray( "data" );
-					        
 					        
 					        ObjectMapper mapper = new ObjectMapper(); // can reuse, share globally
 					        List<FriendPreview> friends = mapper.readValue(arr.toString(), new TypeReference<List<FriendPreview>>(){});

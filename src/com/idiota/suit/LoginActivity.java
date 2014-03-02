@@ -5,10 +5,14 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.Toast;
 
+import com.facebook.Request;
+import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.Session.StatusCallback;
 import com.facebook.SessionState;
+import com.facebook.model.GraphUser;
 import com.idiota.suit.base.BaseSuitActivity;
 import com.parse.Parse;
 import com.parse.ParseAnalytics;
@@ -69,15 +73,43 @@ public class LoginActivity extends BaseSuitActivity {
     private void updateView() {
         Session session = Session.getActiveSession();
         if (session.isOpened()) {
-        	Intent goToNextActivity = new Intent(getApplicationContext(), FriendsActivity.class);
-        	goToNextActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        	startActivity(goToNextActivity);
-        	finish();
+        	fetchCurrentUser(session);
         } else {
             mButton.setOnClickListener(new OnClickListener() {
                 public void onClick(View view) { onClickLogin(); }
             });
         }
+    }
+    
+    private void fetchCurrentUser(final Session session) {
+        Request request = Request.newMeRequest(session, 
+                new Request.GraphUserCallback() {
+
+            @Override
+            public void onCompleted(GraphUser user, Response response) {
+                // If the response is successful
+                if (session == Session.getActiveSession()) {
+                    if (user != null) {
+                        String userId = user.getId();
+                        ((App) LoginActivity.this.getApplication()).setLoggedInUserId(userId);
+                        goToNextActivity();
+                    }
+                }
+                if (response.getError() != null) {
+                    // Handle error
+                	Toast.makeText(LoginActivity.this, "Login failed. Please try again.", Toast.LENGTH_SHORT).show();
+                	LoginActivity.this.logout();
+                }
+            }
+        });
+        request.executeAsync();
+    }
+    
+    private void goToNextActivity() {
+    	Intent goToNextActivity = new Intent(getApplicationContext(), FriendsActivity.class);
+    	goToNextActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+    	startActivity(goToNextActivity);
+    	finish();
     }
 
     private void onClickLogin() {

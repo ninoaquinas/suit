@@ -12,12 +12,14 @@
 
     <!-- Versus Activity -->
     <string name="title_activity_versus">VersusActivity</string>
-    
+
     <!-- Friends Activity -->
     <string name="title_activity_friends">FriendsActivity</string>
     <string name="friends_title_text">Cari temen suit?</string>
 
     <!-- FB SDK -->
     <string name="fb_app_id">594467643974621</string>
+    <string name="title_activity_suit">SuitActivity</string>
+    <string name="hello_world">Hello world!</string>
 
 </resources>

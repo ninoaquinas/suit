@@ -4,10 +4,12 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 
 import com.facebook.Session;
 import com.facebook.SessionState;
+import com.idiota.suit.App;
 import com.idiota.suit.LoginActivity;
 import com.idiota.suit.R;
 
@@ -46,6 +48,8 @@ public abstract class BaseSuitActivity extends Activity {
 	}
     
     protected void logout() {
+        ((App) getApplication()).setLoggedInUserId(null);
+    	
         Session activeSession = Session.getActiveSession();
         if (activeSession != null) {
         	activeSession.closeAndClearTokenInformation();;
@@ -66,6 +70,13 @@ public abstract class BaseSuitActivity extends Activity {
 	        default:
 	            return super.onOptionsItemSelected(item);
 	    }
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.common_menu, menu);
+		return true;
 	}
 	
 }
