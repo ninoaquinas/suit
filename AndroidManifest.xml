@@ -34,23 +34,19 @@
         
         <activity
             android:name="com.idiota.suit.LoginActivity"
-            android:label="@string/title_activity_login"
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         
         <activity
             android:name="com.idiota.suit.FriendsActivity"
-            android:label="@string/title_activity_friends"
             android:screenOrientation="portrait" />
         
         <activity
             android:name="com.idiota.suit.VersusActivity"
-            android:label="@string/title_activity_versus"
             android:screenOrientation="portrait" />
 
         <service android:name="com.parse.PushService" />
