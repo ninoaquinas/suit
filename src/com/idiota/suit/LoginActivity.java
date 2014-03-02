@@ -11,6 +11,8 @@ import com.facebook.Session.StatusCallback;
 import com.facebook.SessionState;
 import com.idiota.suit.base.BaseSuitActivity;
 import com.parse.Parse;
+import com.parse.ParseAnalytics;
+import com.parse.PushService;
 
 public class LoginActivity extends BaseSuitActivity {
     private Button mButton;
@@ -25,14 +27,12 @@ public class LoginActivity extends BaseSuitActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
-		
+
 		Parse.initialize(this, "U3cwotKUuI2OSBsfzITZCX9EQwW2wpjHJeRfkgDI", 
 						 "83F9laWZ1ESTJJLFyr3ARPB4cqbn2CyEy6xBsHGH");
 		
-		/*
 		PushService.setDefaultPushCallback(this, LoginActivity.class);
 		ParseAnalytics.trackAppOpened(getIntent());
-		*/
 
         Session session = Session.getActiveSession();
         if (session == null) {
