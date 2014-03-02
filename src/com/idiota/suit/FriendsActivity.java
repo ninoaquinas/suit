@@ -19,6 +19,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -285,6 +286,15 @@ public class FriendsActivity extends BaseSuitFragmentActivity implements TabHost
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before,
 					int count) {}
+		});
+		
+		/* Workaround for EditText vs TabHost focus bug */
+		mSearchField.setOnTouchListener(new View.OnTouchListener() {
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				mSearchField.requestFocusFromTouch();
+				return true;
+			}
 		});
 		
 		mSearchClear.setOnClickListener(new View.OnClickListener() {
